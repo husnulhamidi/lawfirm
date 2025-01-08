@@ -1,0 +1,56 @@
+.tuwtext{
+    opacity:0.2;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 70px;
+    margin-right: 25px;
+  }
+  .pt-10{
+    padding-top: 10px;
+  }
+  .p-rt-white{
+    padding-left: 20px;
+    padding-right: 20px;
+    color:white;
+  }
+  .p-rt-black{
+    padding-left: 20px;
+    padding-right: 20px;
+    color:black;
+  }
+  .pt-5{
+    padding-top: 10px;
+  }
+  .pl-5{
+    padding-left: 10px;
+  }
+  .pr-5{
+    padding-right: 10px;
+  }
+  .pb-5{
+    padding-bottom: 10px;
+  }
+  .breakline{
+    white-space: nowrap;
+    float: left;
+    display: block;
+  }
+  .legend-ren{
+    background-color: #E9EF47;
+    color:black;
+    border: none;
+    padding: 3px 7px;
+    border-radius: 3px;
+    text-shadow: 2px white;
+    margin-top:20px;
+  }
+  .legend-real{
+    background-color: #6ABF64;
+    color:black;
+    border: none;
+    padding: 3px 7px;
+    border-radius: 3px;
+    text-shadow: 2px white;
+    margin-top:20px;
+  }

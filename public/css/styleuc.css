@@ -1,0 +1,41 @@
+/* Reset some basic styles */
+body, h1, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    background-image: url('construction-background.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    background-color: transparent;
+
+  
+}
+
+h1 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.construction-icon {
+    font-size: 50px;
+    color: #f39c12;
+}

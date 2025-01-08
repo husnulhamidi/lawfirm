@@ -1,0 +1,14 @@
+*.bak
+*.old
+*.sample
+*.sql
+
+.editorconfig
+.env-example
+.git-ftp-ignore
+.gitlab-ci.yml
+.gitattributes
+.gitignore
+
+alter_table.txt
+apikey.txt
