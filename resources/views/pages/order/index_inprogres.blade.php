@@ -31,18 +31,18 @@
                             <th>Progres</th>
                             <th>Kendala</th>
                             <th>Keterangan</th>
-                            <th>Selesai</th>
                             <th width="80px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- Loop through biomasa and display data here --}}
+                        {{-- Loop through orders and display data here --}}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
     @include('pages/order/modal_form')
+    @include('pages/order/modal_proses')
 @endsection
 
 {{-- Styles Section --}}
@@ -55,7 +55,13 @@
     <script>
         const url_json = "";
         const role_id = '{{auth()->user()->role_id}}';
+        const submenu = '{{$submenu}}';
     </script>
+
+    <!--begin::Page Scripts(used by this page)-->
+    <script src="{{ asset('js/pages/widgets.js') }}"></script>
+    <script src="{{ asset('js/pages/crud/forms/widgets/bootstrap-datepicker.js') }}"></script>
+    <!--end::Page Scripts-->
         
     <script src="{{ asset('plugins/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/module/order/order.js?random='.date('ymdHis')) }}" type="text/javascript"></script>

@@ -91,7 +91,8 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth'], function () {
     Route::get('/selesai', 'OrderController@selesai')->name('orders.selesai');
     Route::get('list', 'OrderController@getData')->name('orders.data');
     Route::post('submit', 'OrderController@storeOrUpdate')->name('orders.submit');
-    Route::get('show', 'OrderController@show')->name('orders.show');
+    Route::post('submit/tahapanproses', 'OrderController@tahapanProses')->name('orders.tahapanprosess');
+    Route::post('show', 'OrderController@show')->name('orders.show');
     Route::delete('delete', 'OrderController@destroy')->name('orders.delete');
     
 });

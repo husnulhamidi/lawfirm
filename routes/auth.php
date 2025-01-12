@@ -90,6 +90,6 @@ Route::get('/login', [AuthenticateController::class, 'create'])
                 ->middleware('guest')
                 ->name('login');
 
-// Route::get('/', function () {
-//     return redirect('/login');
-// });
+Route::get('/', function () {
+    return redirect('/login');
+});

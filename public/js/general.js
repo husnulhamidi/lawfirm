@@ -82,6 +82,16 @@ function inputThousandsSeparator(x, y=0) {
 function tanggalIndo(tgl=''){
     if(tgl!='' && tgl!=null && tgl!=undefined){
         var t = tgl.toString().split("-");
+        var indo = t[2]+'/'+t[1]+'/'+t[0];
+    }else{
+        var indo = '';
+    }
+    return indo;
+}
+
+function dateIndo(tgl=''){
+    if(tgl!='' && tgl!=null && tgl!=undefined){
+        var t = tgl.toString().split("-");
         var indo = t[2]+'-'+t[1]+'-'+t[0];
     }else{
         var indo = '';
