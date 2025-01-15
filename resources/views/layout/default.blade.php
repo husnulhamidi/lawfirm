@@ -15,7 +15,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
         {{-- Favicon --}}
-        <!-- <link rel="shortcut icon" href="{{ asset('media/logos/favicon.png') }}" /> -->
+        <link rel="shortcut icon" href="{{ asset('media/logos/law-firm.png') }}" />
 
         {{-- Fonts --}}
         {{ Metronic::getGoogleFontsInclude() }}

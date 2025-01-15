@@ -42,6 +42,7 @@
         </div>
     </div>
     @include('pages/order/modal_form')
+    @include('pages/order/modal_riwayat')
 @endsection
 
 {{-- Styles Section --}}

@@ -103,8 +103,15 @@ var KTDatatables = function() {
                             aksi += '<a href="javascript:;" data-toggle="modal" data-target="#ModalFormProses" class="btn btn-sm btn-clean btn-icon mr-2 btn_update_tahapan_proses" uid="'+data+'" data-toggle="toopltip" title="Update tahapan Proses" data-html="true" data-content="">'+
                             '<i class="fas fa-clipboard-check"></i>'+   
                            '</a>';
+                        }
+
+                        aksi += '<a data-toggle="modal" data-target="#riwayat_order" class="btn btn-sm btn-clean btn-icon mr-2 btn_riwayat_order" uid="'+data+'" data-toggle="popover" title="Riwayat" data-html="true" data-content="">'+
+                        '<i class="fas fa-history"></i>'+   
+                       '</a>';
+
+                       if(jv_update=='true'){
                             aksi += '<a href="javascript:;" data-toggle="modal" data-target="#ModalFormOrder" class="btn btn-sm btn-clean btn-icon mr-2 btn_edit_order" uid="'+data+'" data-toggle="popover" title="Ubah Data" data-html="true" data-content="">'+
-                                 '<i class="fa fa-edit"></i>'+   
+                                '<i class="fa fa-edit"></i>'+   
                                 '</a>';
                         }
 
@@ -179,9 +186,9 @@ async function SetupForm(id="",form="order"){
             ResetFormTahapanProses();
             $("#order_id_tp").val(resp.id);
             $("#tahapan_proses_id").val(resp.tahapan_proses_id).trigger('change');
-            $("#progres").val(resp.progres);
-            $("#kendala").val(resp.kendala);
-            $("#keterangan").val(resp.keterangan);
+            //$("#progres").val(resp.progres);
+            //$("#kendala").val(resp.kendala);
+            //$("#keterangan").val(resp.keterangan);
         }
 
         //--//
@@ -377,6 +384,73 @@ var _submitTahapanProsesForm = function () {
     });
 }
 
+async function setupRiwayat(id){
+    const response = await fetch('/orders/history', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        body: JSON.stringify({
+            id: id
+        })
+    });
+    let responseJson = await response.json();
+    if(responseJson.id!=''){
+        
+        $("#hasabah_show").html(responseJson.nama_nasabah);
+        $("#tgl_order_show").html(tanggalIndo(responseJson.tanggal_order));
+        $("#jenis_order_show").html(responseJson.jenis_order.name);
+
+        var html = "";
+        html+="<table width='100%' border='1'>";
+        html+='<tr><th class="text-center">TAHAPAN PROSES</th>'+
+                    '<th class="text-center">PROGRES</th>'+
+                    '<th class="text-center">KENDALA</th>'+
+                    '<th class="text-center">KETERANGAN</th>'+
+                    '<th class="text-center">TANGGAL</th>'+
+                '</tr>';
+        //i=0;
+        var tgl ="";
+        responseJson.order_history.forEach((item,index)=>{
+
+            if(item.end_date!="" || item.end_date==null){
+                tgl = tanggalIndo(item.start_date)+' - '+tanggalIndo(item.end_date);
+            }else{
+                tgl = tanggalIndo(item.start_date);
+            }
+
+           let progres = item.progres===null?'':item.progres;
+           let kendala = item.kendala===null?'':item.kendala;
+           let keterangan = item.keterangan===null?'':item.keterangan;
+            
+            html+="<tr><td >"+item.tahapan_proses.name+"</td>"+
+                            "<td >"+progres+"</td>"+
+                            "<td >"+kendala+"</td>"+
+                            "<td >"+keterangan+"</td>"+
+                            "<td >"+tgl+"</td>"+
+                        "</tr>";
+        });
+        html+="</table>";
+      
+        $("#list_riwayat_show").html(html);
+        
+        //--//
+    }else{
+        Swal.fire({
+            title: "Error!",
+            text: "Refresh dan coba kembali. Jika masih error, silahkan hubungi Administrator.",
+            icon: "danger",
+            buttonsStyling: false,
+            confirmButtonText: "Ok",
+            customClass: {
+                confirmButton: "btn btn-danger"
+            }
+        });
+    }
+}
+
 
 
 jQuery(document).ready(function() {
@@ -425,6 +499,11 @@ jQuery(document).ready(function() {
     $(document).on('click', '.btn_update_tahapan_proses', function() {
         var id = $(this).attr('uid');
         SetupForm(id,"tahapan");
+    });
+
+    $(document).on('click', '.btn_riwayat_order', function() {
+        var id = $(this).attr('uid');
+        setupRiwayat(id);
     });
     
     $(document).on('click', '.btn_delete_order', function() {

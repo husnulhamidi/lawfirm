@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use DataTables;
-
+use Carbon\Carbon;
 use App\Models\JenisOrder;
 use App\Models\Order;
 use App\Models\OrderHistory;
@@ -144,6 +144,18 @@ class OrderController extends Controller
                 $lastid_ = $save->id;
             }
 
+
+            $last = OrderHistory::where('order_id', $lastid_)->latest("id")->first();
+            if(!empty($last)){
+                OrderHistory::find($last->id)->update(["end_date" => date("Y-m-d")]);
+            }
+
+
+            $post['order_id'] = $lastid_;
+            $post['created_by'] = auth()->user()->id;
+            $post['start_date'] = date("Y-m-d");
+            OrderHistory::create($post);
+
             $return = array(
                 'success' => "true",
                 'message' => "Data berhasil di simpan.",
@@ -206,6 +218,60 @@ class OrderController extends Controller
             return $return;
         }
        
+    }
+
+    public function history(Request $req)
+    {
+        $id = $req->input("id");
+        $order = Order::with([
+                "orderHistory" => function($q){ 
+                    $q->with(["tahapanProses"]);
+                }
+                ,"tahapanProses","jenisOrder"])
+            ->where('id',$id)
+            ->first();
+            
+        return response()->json($order);
+
+            $return['nasabah_show'] = $order->nama_nasabah;
+            $return['tanggal_show'] = Carbon::parse($order->tanggal_order)->format("d M Y");
+            $return['jenis_order_show'] = $order->jenis_order['name'];
+
+            return $return;
+
+            $data_his = '';
+            $data_his.="<table width='100%' border='1'>";
+            $data_his.='<tr><th class="text-center">NO.</th>
+                        <th class="text-center">TAHAPAN PROSES</th>
+                        <th class="text-center">PROGRES</th>
+                        <th class="text-center">KENDALA</th>
+                        <th class="text-center">KETERANGAN</th>
+                        <th class="text-center">TANGGAL</th>
+                        </tr>';
+            $i=0;
+            foreach ($order->order_history as $key) {
+                $i++;
+
+                if($key->end_date!=""){
+                    $tgl = Carbon::parse($key->start_date)->format("d M Y").' s/d '.Carbon::parse($key->end_date)->format("d M Y");
+                }else{
+                    $tgl = Carbon::parse($key->start_date)->format("d M Y");
+                }
+                
+
+                $data_his.="<tr>
+                                <td width='8px' align='center'>".$i."</td>
+                                <td >".$key->tahapan_proses->name."</td>
+                                <td >".$key->progres."</td>
+                                <td >".$key->kendala."</td>
+                                <td >".$key->keterangan."</td>
+                                <td >".$tgl."</td>
+                            </tr>";
+            }
+            $data_his.="</table>";
+            $return['history_table'] = $data_his;
+        
+        return $return;
     }
 
 

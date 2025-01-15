@@ -36,7 +36,7 @@
             <div class="header-logo">
                 <a href="{{ url('/') }}">
                     {{-- <img alt="{{ config('app.name') }}" src="{{ asset('media/logos/'.$kt_logo_image) }}"/> --}}
-                    <b class="text-yellow-tjb"><h3>LAW FIRM R.I</h3></b>
+                    <b class="text-yellow-tjb"><h3>L.F.R.I</h3></b>
                 </a>
             </div>
         @endif

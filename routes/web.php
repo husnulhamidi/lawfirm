@@ -94,6 +94,7 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth'], function () {
     Route::post('submit/tahapanproses', 'OrderController@tahapanProses')->name('orders.tahapanprosess');
     Route::post('show', 'OrderController@show')->name('orders.show');
     Route::delete('delete', 'OrderController@destroy')->name('orders.delete');
+    Route::post('history', 'OrderController@history')->name('orders.history');
     
 });
 
