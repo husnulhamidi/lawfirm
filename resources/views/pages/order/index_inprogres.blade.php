@@ -21,7 +21,7 @@
                 <table class="table table-bordered" id="tbl_order">
                     <thead>
                         <tr>
-                            <th>No.</th>
+                            <th width="20px">No.</th>
                             <th>Nasabah</th>
                             <th>Tanggal Order</th>
                             <th>Invoice</th>

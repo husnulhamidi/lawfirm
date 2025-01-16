@@ -65,7 +65,7 @@ class OrderController extends Controller
     {
         $submenu = $request->input('submenu');
         $orders = Order::with(["jenisOrder","tahapanProses"])
-                ->select(['id','jenis_order_id','tahapan_proses_id','nama_nasabah','tanggal_order','invoice','pengeluaran','progres','kendala','keterangan']); 
+                ->select(['id','jenis_order_id','tahapan_proses_id','nama_nasabah','tanggal_order','invoice','pengeluaran','progres','kendala','keterangan',DB::raw("DATE(updated_at) as date_updated")]); 
 
         if($submenu=='inprogres'){
             $orders->where('tahapan_proses_id','<',9);

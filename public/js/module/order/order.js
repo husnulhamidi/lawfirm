@@ -1,4 +1,5 @@
 "use strict";
+
 var KTDatatables = function() {
 
 	var initTable = function() {
@@ -60,7 +61,7 @@ var KTDatatables = function() {
             "columns": [
                 {
                     "data": "id",
-                    "width": "50px",
+                    "width": "30px",
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
@@ -89,7 +90,13 @@ var KTDatatables = function() {
                 { "data": "tahapan_proses.name" },
                 { "data": "progres" },
                 { "data": "kendala" },
-                { "data": "keterangan" },
+                { 
+                    "data": "keterangan",
+                    render: function (data, type, row, meta) {
+                        let ket = data??"";
+                        return ket+"Terakhir Update: "+tanggalIndo(row.date_updated);
+                    } 
+                },
                 {
                     "data": "id",
                     "className": "text-center",

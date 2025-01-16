@@ -7,26 +7,13 @@ use NumberFormatter;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\Batubara;
-use App\Models\Bbm;
-use App\Models\Biomasa;
-use App\Models\Delivery;
-use App\Models\GasPipa;
-use App\Models\Hba;
-use App\Models\Icp;
-use App\Models\Kurs;
-use App\Models\Lng;
-use App\Models\MotherVessel;
-use App\Models\MotherVesselStatus;
-use App\Models\StrategicObjectives;
-use App\Models\RunningText;
-
-use App\Traits\DashboardService;
+use App\Models\Piutang;
+use App\Models\PiutangDetail;
+use App\Models\Order;
 
 class DashboardController extends Controller
 {
-    use DashboardService;
-
+   
     public function __construct() {
         date_default_timezone_set('asia/jakarta');
     }
@@ -38,37 +25,25 @@ class DashboardController extends Controller
         $startDate =date("Y-m-d");
         $endDate =date("Y-m-d");
         $role_id = auth()->user()->role_id;
-        //$dt = $this->dashboardadmin();
-        //$latest_date = $this->latestDate();
-        //return response()->json($latest_date);die;
-        return view('pages.dashboard.dashboard',compact('page_title','role_id','startDate','endDate'));
+        $static = $this->dashlet();
+       
+        return view('pages.dashboard.dashboard',compact('page_title','role_id','startDate','endDate','static'));
     }
 
-    public function dashboard()
-    {
-        
-        $page_title =" Dashboard";
-        $startDate =date("Y-m-d");
-        $endDate =date("Y-m-d");
-        $type =1;
-        //$top_rt = $this->topRunningText();
-        //$bottom_rt =$this->bottomRunningText();
-        $latest_date = $this->latestDate();
-        $running_text = $this->runningText();
-        //return response()->json($running_text);die;
-        return view('frontend.dashboard',compact('page_title','startDate','endDate','running_text','type','latest_date'));
-    }
+    private function dashlet(){
+        $total_utang = Piutang::sum('nominal');
+        $terbayar = PiutangDetail::sum("nominal");
+        $sisa_utang = (int)$total_utang-(int)$terbayar;
 
-    public function dashboardDetail()
-    {
-        
-        $page_title =" Dashboard";
-        $startDate =date("Y-m-d");
-        $endDate =date("Y-m-d");
-        $type =2;
-        $running_text = $this->runningText();
-        $latest_date = $this->latestDate();
-        return view('frontend.dashboard',compact('page_title','startDate','endDate','running_text','type','latest_date'));
+        $jumlah_order_inprogres = Order::where("tahapan_proses_id",'<',9)->count();
+        $jumlah_order_selesai = Order::where("tahapan_proses_id",9)->count();
+
+        $result = array(
+            "sisa_utang"=> "Rp. ".number_format($sisa_utang,0,",","."),
+            "jumlah_order_inprogres"=> $jumlah_order_inprogres,
+            "jumlah_order_selesai"  => $jumlah_order_selesai
+        );
+        return $result ;
     }
 
     private function latestDate(){

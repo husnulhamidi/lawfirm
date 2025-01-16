@@ -6,7 +6,7 @@
         {{-- Copyright --}}
         <div class="text-dark order-2 order-md-1">
             <span class="text-muted font-weight-bold mr-2">{{ date("Y") }} &copy;</span>
-            <a href="https://keenthemes.com/metronic" target="_blank" class="text-dark-75 text-hover-primary">P2EP PLN EPI</a>
+            <a href="https://keenthemes.com/metronic" target="_blank" class="text-dark-75 text-hover-primary">LAW FIRM R.I</a>
         </div>
 
         {{-- Nav --}}
