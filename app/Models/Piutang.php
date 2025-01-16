@@ -20,7 +20,5 @@ class Piutang extends Model implements Auditable
     public function piutangDetail() { 
         return $this->hasMany(PiutangDetail::class,"piutang_id")->select("id","piutang_id","nominal","tanggal"); 
     }
-    public function piutangDetailSum() { 
-        return $this->hasMany(PiutangDetail::class,"piutang_id")->sum("nominal"); 
-    }
+
 }
