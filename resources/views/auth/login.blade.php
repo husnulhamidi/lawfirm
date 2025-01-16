@@ -31,7 +31,7 @@
 	</head>
 	<!--end::Head-->
 	<!--begin::Body-->
-	<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading" style="background:#222 url('{{ asset('media/logos/back14.png') }}') no-repeat center center;background-size:cover;background-position: right top ">
+	<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading" style="background:#222 url('{{ asset('media/logos/14.jpg') }}') no-repeat center center;background-size:cover;background-position: right top ">
 		<!--begin::Main-->
 		<div class="d-flex flex-column flex-root">
 			<!--begin::Login-->
@@ -40,10 +40,10 @@
 					<div class="login-form text-center text-white p-7 position-relative overflow-hidden">
 						
 						<!--begin::Login Sign in form-->
-						<div class="login-signin bg-success-o-40 pt-10 pb-5 pl-5 pr-5 text-dark" style="border-radius:30px;">
+						<div class="login-signin bg-success-o-40 pt-10 pb-5 pl-5 pr-5 text-white" style="border-radius:30px;">
 							<div class="mb-20">
-								<h3>Sign In </h3>
-								<p class="opacity-60 font-weight-bold">Silahkan masukan username dan password anda</p>
+								<h3 class="text-white">Sign In </h3>
+								<p class="opacity-60 font-weight-bold text-white">Silahkan masukan username dan password anda</p>
 							</div>
 							<form class="form" id="kt_login_signin_form"  method="POST" action="{{ route('action-login') }}">
 								@csrf
@@ -60,11 +60,11 @@
 								</div>
 								@endif
 								<div class="form-group text-left">
-									<label class="pl-5">Username</label>
+									<label class="pl-5 text-white">Username</label>
 									<input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8 mb-5" type="text" placeholder="Username" name="username" autocomplete="off" required />
 								</div>
 								<div class="form-group input-icon input-icon-right text-left">
-									<label class="pl-5">Password</label>
+									<label class="pl-5 text-white">Password</label>
 									<input id="password-field" class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8 mb-5" type="password" placeholder="Password" name="password" required/>
 									<span toggle="#password-field" class="far fa-eye-slash icon-md toggle-password mt-8"></span>
 								</div>
@@ -72,7 +72,7 @@
 									<a href="javascript:;" id="kt_login_forgot" class="text-white font-weight-bold">Forget Password ?</a>
 								</div> -->
 								<div class="form-group text-center mt-10">
-									<button  type="submit" id="kt_login_singin_form_submit_button"  class="btn btn-pill btn-block btn-outline-dark font-weight-bold opacity-90 px-15 py-3">Sign In</button>
+									<button  type="submit" id="kt_login_singin_form_submit_button"  class="btn btn-pill btn-block btn-dark font-weight-bold opacity-90 px-15 py-3">Sign In</button>
 								</div>
 							</form>
 							<div class="mt-10">

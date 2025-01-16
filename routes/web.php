@@ -106,6 +106,11 @@ Route::group(['prefix' => 'piutangs', 'middleware' => 'auth'], function () {
     Route::post('submit', 'PiutangController@submit')->name('piutang.submit');
     Route::post('show', 'PiutangController@show')->name('piutang.show');
     Route::delete('delete', 'PiutangController@destroy')->name('piutang.delete');
+    Route::get('detail', 'PiutangController@detail')->name('piutang.detail');
+    Route::get('detail/list', 'PiutangController@detailList')->name('piutang.detail_list');
+    Route::post('detail/submit', 'PiutangController@submitDetail')->name('piutang.submit_detail');
+    Route::post('detail/show', 'PiutangController@showDetail')->name('piutang.show_detail');
+    Route::delete('detail/delete', 'PiutangController@destroyDetail')->name('piutang.delete_detail');
     
 });
 

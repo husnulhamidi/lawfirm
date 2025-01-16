@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-toolbar">
                     @if ($accessMenu['add']=='true')
-                    <a class="btn btn-primary btn-sm mr-2 font-weight-bolder" id="btn_add" data-toggle="modal" data-target="#ModalFormUnitPembangkit">
+                    <a class="btn btn-primary btn-sm mr-2 font-weight-bolder" id="btn_add" data-toggle="modal" data-target="#ModalFormPiutang">
                         <span class="flaticon-plus"></span> Tambah
                     </a>
                     @endif
@@ -18,15 +18,15 @@
             </div>
             <div class="card-body">
                 <!--begin: Datatable-->
-                <table class="table table-bordered" id="tbl_unit_pembangkit">
+                <table class="table table-bordered" id="tbl_piutang">
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th>Cluster</th>
-                            <th>Sub Cluster</th>
-                            <th>Nama Pembangkit</th>
-                            <!-- <th>Owner / Operator</th> -->
-                            <th width="80px">Action</th>
+                            <th>Nama Pegawai</th>
+                            <th>Tanggal</th>
+                            <th>Jumlah Pinjaman</th>
+                            <th>Sisa Utang</th>
+                            <th width="120px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,7 +36,7 @@
             </div>
         </div>
     </div>
-    @include('pages/unit_pembangkit/modal_form')
+    @include('pages/piutang/modal_form')
 @endsection
 
 {{-- Styles Section --}}
@@ -52,6 +52,6 @@
     </script>
         
     <script src="{{ asset('plugins/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/module/unit_pembangkit/unit_pembangkit.js?random='.date('ymdHis')) }}" type="text/javascript"></script>
+    <script src="{{ asset('js/module/piutang/piutang.js?random='.date('ymdHis')) }}" type="text/javascript"></script>
 @endsection
 {{-- Content --}}

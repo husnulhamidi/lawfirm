@@ -1,4 +1,5 @@
 "use strict";
+
 var KTDatatables = function() {
 
 	var initTable = function() {
@@ -6,7 +7,7 @@ var KTDatatables = function() {
         if(jv_update=='true' || jv_delete=='true'){
             showAct = true;
         }
-		var table = $('#tbl_unit_pembangkit');
+		var table = $('#tbl_piutang');
 
 		// begin first table
 		table.DataTable({
@@ -51,7 +52,7 @@ var KTDatatables = function() {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "/unit/pembangkit/list",
+                "url": "/piutangs/list",
                 "type": "GET",
                 "data" : function(d){
                    
@@ -65,26 +66,65 @@ var KTDatatables = function() {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },
-                { "data": "cluster" },
-                { "data": "sub_cluster" },
-                { "data": "name" },
+                { "data": "nama_karyawan" },
+                
+                { 
+                    "data": "tanggal",
+                    render: function (data, type, row, meta) {
+                        return tanggalIndo(data);
+                    }
+                 },
+                 { 
+                    "data": "nominal" ,
+                    "class": "text-right",
+                    render: function (data, type, row, meta) {
+                        return viewThousandsSeparator(data);
+                    }
+
+                },
+                 { 
+                    "data": "piutang_detail_sum_nominal" ,
+                    "class": "text-right",
+                    render: function (data, type, row, meta) {
+                        let total_bayar = data ?? 0; 
+                        let sisa_utang = parseInt(row.nominal) - parseInt(total_bayar);
+                        if(sisa_utang==0){
+                            return "<span class='badge badge-success'>Lunas</span>";
+                        }else{
+                            return viewThousandsSeparator(sisa_utang);
+                        }
+                        
+                    }
+
+                },
                 {
                     "data": "id",
                     "className": "text-center",
-                    "width": "80px",
+                    "width": "120px",
                     "visible":showAct,
                     "orderable" : false,
                     render: function (data, type, row, meta) {
                         var aksi = '';
-                        
+
+                         aksi += `
+                            <a href="/piutangs/detail?uid=${data}" 
+                            class="btn btn-sm btn-clean btn-icon mr-2" 
+                            uid="${data}" 
+                            data-toggle="tooltips" 
+                            title="Detail" 
+                            data-html="true" 
+                            data-content="">
+                                <i class="fa fa-eye"></i>
+                            </a>`;
+
                         if(jv_update=='true'){
-                            aksi += '<a href="javascript:;" data-toggle="modal" data-target="#ModalFormUnitPembangkit" class="btn btn-sm btn-clean btn-icon mr-2 btn_edit_unit_pembangkit" uid="'+data+'" data-toggle="popover" title="Ubah Data" data-html="true" data-content="">'+
+                            aksi += '<a href="javascript:;" data-toggle="modal" data-target="#ModalFormPiutang" class="btn btn-sm btn-clean btn-icon mr-2 btn_edit_piutang" uid="'+data+'" data-toggle="popover" title="Ubah Data" data-html="true" data-content="">'+
                                  '<i class="fa fa-edit"></i>'+   
                                 '</a>';
                         }
 
                         if(jv_delete=='true'){
-                            aksi +=  '<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn_delete_bbm" uid="'+data+'" data-toggle="popover" title="Hapus Data" data-html="true" data-content="">'+
+                            aksi +=  '<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn_delete_piutang" uid="'+data+'" data-toggle="popover" title="Hapus Data" data-html="true" data-content="">'+
                                     '<i class="fas fa-trash"></i>'+
                                 '</a>';
                         }
@@ -112,14 +152,15 @@ var KTDatatables = function() {
 
 
 function ResetForm(){
-    document.getElementById("form-unit-pembangkit").reset();
-    $("#unit_id").val("");
-    $("#nama_unit").val("");
-    $("#kota").val("");
+    document.getElementById("form-piutang").reset();
+    $("#piutang_id").val("");
+    $("#nama_pegawai").val("");
+    $("#jumlah_pinjaman").val("");
+    $("#tgl").val("");
 }
 
 async function SetupForm(id=""){
-    const response = await fetch('/unit/pembangkit/show', {
+    const response = await fetch('/piutangs/show', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -136,10 +177,11 @@ async function SetupForm(id=""){
     if(responseJson.success){
         ResetForm();
         
-        const bbdata = responseJson.data;
-        $("#unit_id").val(bbdata.id);
-        $("#nama_unit").val(bbdata.name);
-        $("#kota").val(bbdata.city);
+        const utg = responseJson.data;
+        $("#piutang_id").val(utg.id);
+        $("#nama_pegawai").val(utg.nama_karyawan);
+        $("#jumlah_pinjaman").val(viewThousandsSeparator(utg.nominal));
+        $("#tgl").val(tanggalIndo(utg.tanggal));
 
         //--//
     }else{
@@ -159,13 +201,27 @@ async function SetupForm(id=""){
 
 var _submitForm = function () {
     FormValidation.formValidation(
-        document.getElementById('form-unit-pembangkit'),
+        document.getElementById('form-piutang'),
         {
             fields: {
-                nama_unit: {
+                nama_pegawai: {
                     validators: {
                         notEmpty: {
-                            message: 'Nama Unit harus diisi'
+                            message: 'Nama pegawai harus diisi'
+                        }
+                    }
+                },
+                jumlah_pinjaman: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Jumlah Pinjaman harus diisi'
+                        }
+                    }
+                },
+                tgl: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Tanggal harus diisi'
                         }
                     }
                 },
@@ -179,22 +235,22 @@ var _submitForm = function () {
         }
     ).on('core.form.valid', function() {
         
-        var formData = new FormData($("#form-unit-pembangkit")[0]);
+        var formData = new FormData($("#form-piutang")[0]);
 
         // Mengirim formulir menggunakan Ajax
         $.ajax({
             type: "POST",
-            url: "/unit/pembangkit/submit",
+            url: "/piutangs/submit",
             data: formData,
             processData: false,
             contentType: false,
             success: function (response) {
-                $("#ModalFormUnitPembangkit").modal("hide");
+                $("#ModalFormPiutang").modal("hide");
 
                 if (response.success == "true") {
                     $("#unit_id").val(response.id);
                     ResetForm();
-                    $("#tbl_unit_pembangkit").DataTable().ajax.reload(null, false);
+                    $("#tbl_piutang").DataTable().ajax.reload(null, false);
                     Swal.fire({
                         title: "Sukses!",
                         text: response.message,
@@ -238,20 +294,31 @@ jQuery(document).ready(function() {
         },
     });
 
+    $('.show_date_picker').datepicker({
+        format: "dd/mm/yyyy",
+        autoclose: true
+
+    });
+
+    $("#jumlah_pinjaman").on("input", function () {
+        var inputValue = $(this).val().replace(/[^0-9]/g, ''); // Remove non-numeric characters
+        $(this).val(viewThousandsSeparator(inputValue,0,0));
+    });
+
     $("#btn_add").on('click',function() {
         ResetForm();
     });
     
-    $("#btn_submit_unit_pembangkit").one('click',function() {
+    $("#btn_submit_piutang").one('click',function() {
         _submitForm();
     });
 
-    $(document).on('click', '.btn_edit_unit_pembangkit', function() {
+    $(document).on('click', '.btn_edit_piutang', function() {
         var id = $(this).attr('uid');
         SetupForm(id);
     });
     
-    $(document).on('click', '.btn_delete_bbm', function() {
+    $(document).on('click', '.btn_delete_piutang', function() {
         var id = $(this).attr('uid');
         Swal.fire({
             title: "Apakah anda yakin?",
@@ -265,13 +332,13 @@ jQuery(document).ready(function() {
             if (result.value) {
                 $.ajax({
                     type: "DELETE",
-                    url: "/unit/pembangkit/delete",
+                    url: "/piutangs/delete",
                     data: 'id='+id,
                     dataType: "json",
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     success: function(result){
                         if(result.success == "true"){
-                            $('#tbl_unit_pembangkit').DataTable().ajax.reload( null, false );
+                            $('#tbl_piutang').DataTable().ajax.reload( null, false );
                             
                             Swal.fire({
                                 title: "Sukses!",
