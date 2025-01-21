@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Pengeluaran Invoice </label>
+                        <label class="col-sm-3 col-form-label">Keterangan </label>
                         <div class="col-sm-9">
                             <textarea name="keterangan" id="keterangan"  class="form-control input-sm" value=""></textarea>
                         </div>
