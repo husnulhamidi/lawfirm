@@ -95,6 +95,8 @@ Route::group(['prefix' => 'orders', 'middleware' => 'auth'], function () {
     Route::post('show', 'OrderController@show')->name('orders.show');
     Route::delete('delete', 'OrderController@destroy')->name('orders.delete');
     Route::post('history', 'OrderController@history')->name('orders.history');
+    Route::get('export', 'OrderController@exportOrder')->name('orders.export');
+    Route::get('print-order','OrderController@printOrder')->name('orders.print-riwayat');
     
 });
 

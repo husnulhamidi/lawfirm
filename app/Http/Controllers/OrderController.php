@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use DataTables;
+use PDF;
 use Carbon\Carbon;
 use App\Models\JenisOrder;
 use App\Models\Order;
@@ -47,8 +48,9 @@ class OrderController extends Controller
         $title = 'Daftar Order Selesai';
         $submenu='selesai';
         $jenis_order = JenisOrder::all();
+        $tahapan_proses = TahapanProses::all();
         $accessMenu = $this->accessMenu();
-        return view('pages.order.index_selesai',compact('page_title','title','accessMenu','jenis_order','submenu'));
+        return view('pages.order.index_selesai',compact('page_title','title','accessMenu','jenis_order','tahapan_proses','submenu'));
 
     }
 
@@ -64,6 +66,19 @@ class OrderController extends Controller
     public function getData(Request $request)
     {
         $submenu = $request->input('submenu');
+
+        $tgl_start = $request->input('tgl_start');
+        if($request->input('tgl_start')!=""){
+            list($tgl,$bln,$thn)=explode('/',$request->input('tgl_start'));
+            $tgl_start = $thn."-".$bln."-".$tgl;
+        }
+        if($request->input('tgl_end')!=""){
+            list($tgl2,$bln2,$thn2)=explode('/',$request->input('tgl_end'));
+            $tgl_end = $thn2."-".$bln2."-".$tgl2;
+        }else{
+            $tgl_end = date('Y-m-d');
+        }
+
         $orders = Order::with(["jenisOrder","tahapanProses"])
                 ->select(['id','jenis_order_id','tahapan_proses_id','nama_nasabah','tanggal_order','invoice','pengeluaran','progres','kendala','keterangan',DB::raw("DATE(updated_at) as date_updated")]); 
 
@@ -72,6 +87,23 @@ class OrderController extends Controller
         }else{
             $orders->where('tahapan_proses_id',9);
         }
+
+        if($request->input('nama_nasabah')!=''){
+            $orders->where('nama_nasabah','like', '%'.$request->input('nama_nasabah').'%');
+        }
+
+        if($tgl_start!=''){
+            $orders->whereBetween('tanggal_order',[$tgl_start, $tgl_end]);
+        }
+
+        if($request->input('jenis_order_id')!=''){
+            $orders->where('jenis_order_id',$request->input('jenis_order_id'));
+        }
+
+        if($request->input('tahapan_proses_id')!=''){
+            $orders->where('tahapan_proses_id',$request->input('tahapan_proses_id'));
+        }
+
         $orders->orderBy('created_at','desc')->get();
     
         return Datatables::of($orders)->make(true);
@@ -272,6 +304,36 @@ class OrderController extends Controller
             $return['history_table'] = $data_his;
         
         return $return;
+    }
+
+    public function exportOrder(Request $request){
+        $req =  $request->input();
+        //return Excel::download(new ExportInvoiceTrackingInbox($req), 'export-excel-order'.date('ymd').'.xlsx');
+    }
+
+    public function printOrder(Request $req){
+        $order_id = $req->input('print_order_id');
+        $histori = array();
+        $title ="Print Riwayat Order";
+        $order = Order::with([
+                    "orderHistory" => function($q){ 
+                        $q->with(["tahapanProses"]);
+                    }
+                    ,"tahapanProses","jenisOrder"])
+                ->where('id',$order_id)
+                ->first();
+        $data = array(
+            'title'     => $title,
+            'order'     => $order,
+
+        );
+        
+        //dd($order->orderHistory);die;
+        
+        $pdf = PDF::loadview('pages.order.print_riwayat_order',$data);
+        return $pdf->stream();
+
+
     }
 
 

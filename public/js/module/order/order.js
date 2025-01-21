@@ -56,6 +56,12 @@ var KTDatatables = function() {
                 "type": "GET",
                 "data" : function(d){
                    d.submenu=submenu;
+                     // start filter inbox
+                    d.nama_nasabah=$('#filter_nama_nasabah').val();
+                    d.tgl_start=$('#filter_tgl_start').val();
+                    d.tgl_end=$('#filter_tgl_end').val();
+                    d.jenis_order_id=$('#filter_jenis_order_id').val();
+                    d.tahapan_proses_id=$('#filter_tahapan_proses_id').val();
                 }
             },
             "columns": [
@@ -406,7 +412,8 @@ async function setupRiwayat(id){
     let responseJson = await response.json();
     if(responseJson.id!=''){
         
-        $("#hasabah_show").html(responseJson.nama_nasabah);
+        $("#print_order_id").val(responseJson.id);
+        $("#nasabah_show").html(responseJson.nama_nasabah);
         $("#tgl_order_show").html(tanggalIndo(responseJson.tanggal_order));
         $("#jenis_order_show").html(responseJson.jenis_order.name);
 
@@ -511,6 +518,24 @@ jQuery(document).ready(function() {
     $(document).on('click', '.btn_riwayat_order', function() {
         var id = $(this).attr('uid');
         setupRiwayat(id);
+    });
+
+    $("#btn_submit_filter").on('click',function() {
+        $('#ModalFormFilter').modal('hide');
+        $('#tbl_order').DataTable().ajax.reload( null, false );
+
+        // start filter inbox
+        $('#nama_nasabah_exp').val($('#filter_nama_nasabah').val());
+        $('#tgl_start_exp').val($('#filter_tgl_start').val());
+        $('#tgl_end_exp').val($('#filter_tgl_end').val());
+        
+        $('#jenis_order_id_exp').val($('#filter_jenis_order_id').val());
+        $('#tahapan_proses_exp').val($('#filter_tahapan_proses_id').val());
+        
+    });
+
+    $("#btn_submit_filter").on('click',function() {
+        $('#ModalFormFilter').modal('hide');        
     });
     
     $(document).on('click', '.btn_delete_order', function() {
