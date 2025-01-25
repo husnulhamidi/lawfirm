@@ -35,13 +35,35 @@ class DashboardController extends Controller
         $terbayar = PiutangDetail::sum("nominal");
         $sisa_utang = (int)$total_utang-(int)$terbayar;
 
+        $total_invoice = Order::sum('invoice');
+        $total_pengeluaran = Order::sum('pengeluaran');
+        $total_keuntungan =  $total_invoice-$total_pengeluaran;
+
+        $total_invoice_inprogres = Order::where("tahapan_proses_id",'<',9)->sum('invoice');
+        $total_pengeluaran_inprogres   = Order::where("tahapan_proses_id",'<',9)->sum('pengeluaran');
+        $total_inprogres_selesai = $total_invoice-$total_invoice_inprogres;
+        $total_pengeluaran_selesai = $total_pengeluaran-$total_pengeluaran_inprogres;
+
+        $keuntungan_inprogres = $total_invoice_inprogres-$total_pengeluaran_inprogres;
+        $keuntungan_selesai = $total_inprogres_selesai-$total_pengeluaran_selesai;
+
         $jumlah_order_inprogres = Order::where("tahapan_proses_id",'<',9)->count();
         $jumlah_order_selesai = Order::where("tahapan_proses_id",9)->count();
 
         $result = array(
             "sisa_utang"=> "Rp. ".number_format($sisa_utang,0,",","."),
             "jumlah_order_inprogres"=> $jumlah_order_inprogres,
-            "jumlah_order_selesai"  => $jumlah_order_selesai
+            "jumlah_order_selesai"  => $jumlah_order_selesai,
+            "total_invoice" => "Rp. ".number_format($total_invoice,0,",","."),
+            "total_pengeluaran" => "Rp. ".number_format($total_pengeluaran,0,",","."),
+            "total_keuntungan" => "Rp. ".number_format($total_keuntungan,0,",","."),
+            "total_invoice_inprogres" => "Rp. ".number_format($total_invoice_inprogres,0,",","."),
+            "total_inprogres_selesai" => "Rp. ".number_format($total_inprogres_selesai,0,",","."),
+            "total_pengeluaran_inprogres" => "Rp. ".number_format($total_pengeluaran_inprogres,0,",","."),
+            "total_pengeluaran_selesai" => "Rp. ".number_format($total_pengeluaran_selesai,0,",","."),
+
+            "total_keuntungan_inprogres" => "Rp. ".number_format($keuntungan_inprogres,0,",","."),
+            "total_keuntungan_selesai" => "Rp. ".number_format($keuntungan_selesai,0,",","."),
         );
         return $result ;
     }
